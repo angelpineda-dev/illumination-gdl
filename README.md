@@ -6,14 +6,23 @@ PWA ciudadana para documentar fallas de alumbrado, agrupar reportes y dar seguim
 
 - Node.js 20 o posterior
 - pnpm 9 (`corepack enable && corepack prepare pnpm@9.15.4 --activate`)
-- PostgreSQL 14+ con PostGIS habilitado
+- PostgreSQL 16 con PostGIS 3.4 habilitado, instalado localmente
 
 ## Inicio local
 
-1. Copia `.env.example` a `.env`; configura `DATABASE_URL` y un `SESSION_SECRET` aleatorio de al menos 32 caracteres.
-2. Crea la base `alumbrado_gdl` y ejecuta `psql "$DATABASE_URL" -f apps/api/migrations/001_initial.sql && psql "$DATABASE_URL" -f apps/api/migrations/002_sessions.sql`. La migración habilita PostGIS y crea las tablas e índices.
-3. Ejecuta `pnpm install` y `pnpm dev`. Web: <http://localhost:5173>; API: <http://localhost:4000/health>.
-4. En desarrollo, el API lee `.env` desde el directorio desde el que se inicia pnpm.
+1. Instala PostgreSQL 16 y PostGIS 3.4 con el gestor de paquetes de tu sistema e inicia PostgreSQL como servicio local.
+2. Crea la base usando tu usuario local: `createdb alumbrado_gdl`.
+3. Copia `.env.example` a `.env`. Si tu usuario PostgreSQL no coincide con el usuario del sistema, ajusta `DATABASE_URL` a `postgres://USUARIO@localhost:5432/alumbrado_gdl`. Configura un `SESSION_SECRET` aleatorio de al menos 32 caracteres.
+4. Aplica las migraciones desde la raíz del proyecto, en orden:
+
+   ```sh
+   psql "$DATABASE_URL" -f apps/api/migrations/001_initial.sql
+   psql "$DATABASE_URL" -f apps/api/migrations/002_sessions.sql
+   ```
+
+5. Ejecuta `pnpm install` y `pnpm dev`. Web: <http://localhost:5173>; API: <http://localhost:4000/health>.
+
+El usuario PostgreSQL debe tener permisos para crear `pgcrypto` y `postgis` al aplicar la primera migración. El API lee `.env` desde el directorio desde el que se inicia pnpm.
 
 ## Estructura
 
