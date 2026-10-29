@@ -1,0 +1,12 @@
+PLAN-MVP.md
+/node_modules
+packages/*/node_modules
+apps/*/node_modules/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/

@@ -1,0 +1,10 @@
+import { z } from 'zod';
+export const categories = ['luminaire_off','intermittent_or_damaged','insufficient_street_lighting','obstructed_lighting'] as const;
+export const reportStatuses = ['pending_review','published','needs_information','rejected'] as const;
+export const createReportSchema = z.object({category:z.enum(categories),observedAt:z.string().datetime(),description:z.string().trim().min(20).max(3000),context:z.string().trim().max(1000).optional().default(''),coordinates:z.tuple([z.number().min(-180).max(180),z.number().min(-90).max(90)])});
+export const registerSchema = z.object({name:z.string().trim().min(2).max(100),email:z.string().email().max(254),password:z.string().min(12).max(128)});
+export const loginSchema = z.object({email:z.string().email(),password:z.string().min(1).max(128)});
+export const reviewSchema = z.object({action:z.enum(['publish','needs_information','reject']),reason:z.string().trim().max(1000).optional()});
+export const caseSchema = z.object({title:z.string().trim().min(5).max(160),summary:z.string().trim().min(10).max(2000),areaDescription:z.string().trim().max(1000),reportIds:z.array(z.string().uuid()).min(1)});
+export const officialFolioSchema = z.object({authority:z.string().trim().min(2).max(160),channel:z.string().trim().min(2).max(100),folio:z.string().trim().min(1).max(160),submittedAt:z.string().datetime(),receiptUrl:z.string().url().optional(),notes:z.string().max(2000).optional()});
+export const updateSchema = z.object({kind:z.enum(['institutional_response','reported_intervention','field_verification']),summary:z.string().trim().min(5).max(2000),public:true,observedAt:z.string().datetime(),evidenceUrl:z.string().url().optional()});
